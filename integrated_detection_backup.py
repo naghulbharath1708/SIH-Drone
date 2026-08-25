@@ -1,19 +1,15 @@
 import cv2
 import math
-import time
-from datetime import datetime
 from ultralytics import YOLO
 
 
 # ============================================================
 # SIH DRONE - INTEGRATED AI DISASTER DETECTION
-# ENHANCED DEMONSTRATION VERSION
 # ============================================================
 
-print("=" * 70)
-print("        SIH DRONE - INTEGRATED AI DISASTER DETECTION")
-print("        SEARCH + RESCUE | HAZARD AWARENESS | LIVE STATUS")
-print("=" * 70)
+print("=" * 60)
+print("        SIH DRONE - INTEGRATED AI SYSTEM")
+print("=" * 60)
 
 
 # ============================================================
@@ -22,18 +18,21 @@ print("=" * 70)
 
 print("Loading AI models...")
 
+
 # Normal YOLO model
 # Used for:
 # Person, Bicycle, Car, Motorcycle, Bus, Truck
 object_model = YOLO("yolo11n.pt")
 
+
 # Pose model
 # Used for identifying possible fallen / lying victims
 pose_model = YOLO("yolo11n-pose.pt")
 
+
 # Fire + Smoke model
-# 0 = smoke, 1 = fire
 fire_model = YOLO("fire_smoke.pt")
+
 
 print("All AI models loaded successfully!")
 
@@ -55,10 +54,9 @@ print("Press Q to stop.")
 
 
 # ============================================================
-# 3. TARGET CLASSES
+# COCO CLASS IDs WE WANT
 # ============================================================
 
-# COCO class IDs:
 # 0 = person
 # 1 = bicycle
 # 2 = car
@@ -77,264 +75,7 @@ TARGET_CLASSES = {
 
 
 # ============================================================
-# 4. SYSTEM SETTINGS
-# ============================================================
-
-OBJECT_CONFIDENCE = 0.45
-FIRE_CONFIDENCE = 0.40
-POSE_CONFIDENCE = 0.40
-
-# Victim angle threshold:
-# Smaller torso angle means a more horizontal body.
-VICTIM_ANGLE_THRESHOLD = 45
-
-# Counters are reset for every frame.
-person_count = 0
-vehicle_count = 0
-fire_count = 0
-smoke_count = 0
-victim_count = 0
-
-# FPS calculation
-previous_time = time.time()
-fps = 0.0
-
-# Used to avoid printing the same alert continuously.
-last_alert_time = 0
-ALERT_COOLDOWN = 3.0
-
-
-# ============================================================
-# 5. HELPER FUNCTIONS
-# ============================================================
-
-def draw_status_panel(
-    image,
-    person_count,
-    vehicle_count,
-    fire_count,
-    smoke_count,
-    victim_count,
-    fps_value,
-    threat_level
-):
-    """Draw a high-visibility mission dashboard."""
-
-    # Fixed, highly visible panel in the top-left.
-    panel_x1 = 10
-    panel_y1 = 50
-    panel_x2 = 315
-    panel_y2 = 245
-
-    # Solid dark background so the dashboard remains visible
-    # even when the camera image is very bright.
-    cv2.rectangle(
-        image,
-        (panel_x1, panel_y1),
-        (panel_x2, panel_y2),
-        (20, 20, 20),
-        -1
-    )
-
-    # White border
-    cv2.rectangle(
-        image,
-        (panel_x1, panel_y1),
-        (panel_x2, panel_y2),
-        (255, 255, 255),
-        2
-    )
-
-    # Dashboard title
-    cv2.putText(
-        image,
-        "MISSION DASHBOARD",
-        (25, 78),
-        cv2.FONT_HERSHEY_SIMPLEX,
-        0.62,
-        (255, 255, 255),
-        2
-    )
-
-    # Detection counters
-    cv2.putText(
-        image,
-        f"PERSONS       : {person_count}",
-        (25, 108),
-        cv2.FONT_HERSHEY_SIMPLEX,
-        0.52,
-        (255, 255, 255),
-        1
-    )
-
-    cv2.putText(
-        image,
-        f"VEHICLES      : {vehicle_count}",
-        (25, 133),
-        cv2.FONT_HERSHEY_SIMPLEX,
-        0.52,
-        (255, 255, 255),
-        1
-    )
-
-    cv2.putText(
-        image,
-        f"FIRE          : {fire_count}",
-        (25, 158),
-        cv2.FONT_HERSHEY_SIMPLEX,
-        0.52,
-        (0, 0, 255),
-        2
-    )
-
-    cv2.putText(
-        image,
-        f"SMOKE         : {smoke_count}",
-        (25, 183),
-        cv2.FONT_HERSHEY_SIMPLEX,
-        0.52,
-        (0, 165, 255),
-        2
-    )
-
-    cv2.putText(
-        image,
-        f"POSSIBLE VICT.: {victim_count}",
-        (25, 208),
-        cv2.FONT_HERSHEY_SIMPLEX,
-        0.50,
-        (0, 255, 0),
-        2
-    )
-
-    cv2.putText(
-        image,
-        f"FPS           : {fps_value:.1f}",
-        (25, 233),
-        cv2.FONT_HERSHEY_SIMPLEX,
-        0.50,
-        (255, 255, 255),
-        1
-    )
-
-    # Threat indicator at top-right
-    if threat_level == "HIGH":
-        threat_color = (0, 0, 255)
-    elif threat_level == "MEDIUM":
-        threat_color = (0, 165, 255)
-    else:
-        threat_color = (0, 255, 0)
-
-    h, w = image.shape[:2]
-
-    threat_x1 = max(w - 300, 335)
-    threat_y1 = 50
-    threat_x2 = w - 10
-    threat_y2 = 95
-
-    cv2.rectangle(
-        image,
-        (threat_x1, threat_y1),
-        (threat_x2, threat_y2),
-        (20, 20, 20),
-        -1
-    )
-
-    cv2.rectangle(
-        image,
-        (threat_x1, threat_y1),
-        (threat_x2, threat_y2),
-        threat_color,
-        2
-    )
-
-    cv2.putText(
-        image,
-        f"THREAT: {threat_level}",
-        (threat_x1 + 12, threat_y1 + 30),
-        cv2.FONT_HERSHEY_SIMPLEX,
-        0.65,
-        threat_color,
-        2
-    )
-
-def calculate_threat_level(
-    fire_count,
-    smoke_count,
-    victim_count
-):
-    """
-    Calculate a simple demonstration threat level.
-
-    HIGH:
-        Fire detected OR victim detected with fire/smoke.
-
-    MEDIUM:
-        Smoke detected OR possible victim detected.
-
-    LOW:
-        People/objects detected but no direct hazard.
-
-    CLEAR:
-        No relevant detection.
-    """
-
-    if fire_count > 0:
-        return "HIGH"
-
-    if victim_count > 0 and smoke_count > 0:
-        return "HIGH"
-
-    if smoke_count > 0 or victim_count > 0:
-        return "MEDIUM"
-
-    return "CLEAR"
-
-
-def print_event_alert(
-    fire_count,
-    smoke_count,
-    victim_count,
-    threat_level
-):
-    """Print a readable event alert in the terminal."""
-
-    global last_alert_time
-
-    current_time = time.time()
-
-    if current_time - last_alert_time < ALERT_COOLDOWN:
-        return
-
-    alert_message = None
-
-    if fire_count > 0:
-        alert_message = "FIRE DETECTED - IMMEDIATE HAZARD"
-
-    elif victim_count > 0 and smoke_count > 0:
-        alert_message = "POSSIBLE VICTIM + SMOKE DETECTED"
-
-    elif victim_count > 0:
-        alert_message = "POSSIBLE VICTIM DETECTED"
-
-    elif smoke_count > 0:
-        alert_message = "SMOKE DETECTED - CHECK AREA"
-
-    if alert_message is not None:
-        timestamp = datetime.now().strftime("%H:%M:%S")
-
-        print()
-        print("!" * 60)
-        print(f"[{timestamp}] ALERT: {alert_message}")
-        print(f"THREAT LEVEL: {threat_level}")
-        print("!" * 60)
-        print()
-
-        last_alert_time = current_time
-
-
-# ============================================================
-# 6. MAIN LOOP
+# MAIN LOOP
 # ============================================================
 
 while True:
@@ -344,29 +85,6 @@ while True:
     if not ret:
         print("ERROR: Could not read camera frame.")
         break
-
-    # --------------------------------------------------------
-    # FPS
-    # --------------------------------------------------------
-
-    current_time = time.time()
-    time_difference = current_time - previous_time
-
-    if time_difference > 0:
-        fps = 1.0 / time_difference
-
-    previous_time = current_time
-
-
-    # --------------------------------------------------------
-    # Reset per-frame counters
-    # --------------------------------------------------------
-
-    person_count = 0
-    vehicle_count = 0
-    fire_count = 0
-    smoke_count = 0
-    victim_count = 0
 
 
     # Make a copy for displaying detections
@@ -379,7 +97,7 @@ while True:
 
     object_results = object_model(
         frame,
-        conf=OBJECT_CONFIDENCE,
+        conf=0.45,
         classes=list(TARGET_CLASSES.keys()),
         verbose=False
     )
@@ -406,13 +124,8 @@ while True:
             )
 
 
-            # ------------------------------------------------
             # Person
-            # ------------------------------------------------
-
             if class_id == 0:
-
-                person_count += 1
 
                 cv2.rectangle(
                     display,
@@ -433,13 +146,8 @@ while True:
                 )
 
 
-            # ------------------------------------------------
             # Vehicles / obstacles
-            # ------------------------------------------------
-
             else:
-
-                vehicle_count += 1
 
                 cv2.rectangle(
                     display,
@@ -466,7 +174,7 @@ while True:
 
     fire_results = fire_model(
         frame,
-        conf=FIRE_CONFIDENCE,
+        conf=0.40,
         verbose=False
     )
 
@@ -487,11 +195,9 @@ while True:
 
             if class_id == 0:
                 label = "SMOKE"
-                smoke_count += 1
 
             elif class_id == 1:
                 label = "FIRE"
-                fire_count += 1
 
             else:
                 continue
@@ -529,7 +235,7 @@ while True:
 
     pose_results = pose_model(
         frame,
-        conf=POSE_CONFIDENCE,
+        conf=0.40,
         verbose=False
     )
 
@@ -636,8 +342,8 @@ while True:
             # horizontal.
             #
             # This is a basic victim-detection condition.
-
-            if angle < VICTIM_ANGLE_THRESHOLD:
+            
+            if angle < 45:
 
                 # Estimate victim bounding area
                 xs = [
@@ -654,8 +360,6 @@ while True:
 
 
                 if len(xs) > 0 and len(ys) > 0:
-
-                    victim_count += 1
 
                     x1 = min(xs)
                     y1 = min(ys)
@@ -674,37 +378,17 @@ while True:
 
                     cv2.putText(
                         display,
-                        f"POSSIBLE VICTIM {angle:.0f}deg",
+                        "POSSIBLE VICTIM",
                         (x1, max(y1 - 10, 20)),
                         cv2.FONT_HERSHEY_SIMPLEX,
-                        0.65,
+                        0.7,
                         (0, 255, 0),
                         2
                     )
 
 
     # ========================================================
-    # 4. THREAT ASSESSMENT
-    # ========================================================
-
-    threat_level = calculate_threat_level(
-        fire_count,
-        smoke_count,
-        victim_count
-    )
-
-
-    # Print important events to terminal
-    print_event_alert(
-        fire_count,
-        smoke_count,
-        victim_count,
-        threat_level
-    )
-
-
-    # ========================================================
-    # 5. SYSTEM TITLE
+    # SYSTEM TITLE
     # ========================================================
 
     cv2.putText(
@@ -719,68 +403,7 @@ while True:
 
 
     # ========================================================
-    # 6. LIVE MISSION DASHBOARD
-    # ========================================================
-
-    draw_status_panel(
-        display,
-        person_count,
-        vehicle_count,
-        fire_count,
-        smoke_count,
-        victim_count,
-        fps,
-        threat_level
-    )
-
-
-    # ========================================================
-    # 7. STATUS MESSAGE
-    # ========================================================
-
-    if threat_level == "HIGH":
-        status_message = "!!! EMERGENCY - RESPONDER CAUTION !!!"
-
-    elif threat_level == "MEDIUM":
-        status_message = "CAUTION - POTENTIAL HAZARD"
-
-    elif threat_level == "LOW":
-        status_message = "AREA MONITORING"
-
-    else:
-        status_message = "AREA STATUS: CLEAR"
-
-
-    cv2.putText(
-        display,
-        status_message,
-        (20, display.shape[0] - 20),
-        cv2.FONT_HERSHEY_SIMPLEX,
-        0.65,
-        (255, 255, 255),
-        2
-    )
-
-
-    # ========================================================
-    # 8. CURRENT TIME
-    # ========================================================
-
-    timestamp = datetime.now().strftime("%H:%M:%S")
-
-    cv2.putText(
-        display,
-        timestamp,
-        (display.shape[1] - 100, 30),
-        cv2.FONT_HERSHEY_SIMPLEX,
-        0.55,
-        (255, 255, 255),
-        1
-    )
-
-
-    # ========================================================
-    # 9. DISPLAY
+    # DISPLAY
     # ========================================================
 
     cv2.imshow(
@@ -790,7 +413,7 @@ while True:
 
 
     # ========================================================
-    # 10. QUIT
+    # QUIT
     # ========================================================
 
     if cv2.waitKey(1) & 0xFF == ord("q"):
@@ -804,7 +427,4 @@ while True:
 camera.release()
 cv2.destroyAllWindows()
 
-print("=" * 60)
 print("Integrated detection stopped.")
-print("SIH Drone system shutdown complete.")
-print("=" * 60)

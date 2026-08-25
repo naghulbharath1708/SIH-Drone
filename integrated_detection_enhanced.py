@@ -118,49 +118,47 @@ def draw_status_panel(
     fps_value,
     threat_level
 ):
-    """Draw a high-visibility mission dashboard."""
+    """Draw the live mission dashboard on the video frame."""
 
-    # Fixed, highly visible panel in the top-left.
     panel_x1 = 10
     panel_y1 = 50
-    panel_x2 = 315
+    panel_x2 = 330
     panel_y2 = 245
 
-    # Solid dark background so the dashboard remains visible
-    # even when the camera image is very bright.
+    # Semi-transparent black panel
+    overlay = image.copy()
+
     cv2.rectangle(
-        image,
+        overlay,
         (panel_x1, panel_y1),
         (panel_x2, panel_y2),
-        (20, 20, 20),
+        (0, 0, 0),
         -1
     )
 
-    # White border
-    cv2.rectangle(
+    image[:] = cv2.addWeighted(
+        overlay,
+        0.60,
         image,
-        (panel_x1, panel_y1),
-        (panel_x2, panel_y2),
-        (255, 255, 255),
-        2
+        0.40,
+        0
     )
 
     # Dashboard title
     cv2.putText(
         image,
         "MISSION DASHBOARD",
-        (25, 78),
+        (25, 75),
         cv2.FONT_HERSHEY_SIMPLEX,
-        0.62,
+        0.65,
         (255, 255, 255),
         2
     )
 
-    # Detection counters
     cv2.putText(
         image,
         f"PERSONS       : {person_count}",
-        (25, 108),
+        (25, 105),
         cv2.FONT_HERSHEY_SIMPLEX,
         0.52,
         (255, 255, 255),
@@ -170,7 +168,7 @@ def draw_status_panel(
     cv2.putText(
         image,
         f"VEHICLES      : {vehicle_count}",
-        (25, 133),
+        (25, 130),
         cv2.FONT_HERSHEY_SIMPLEX,
         0.52,
         (255, 255, 255),
@@ -180,83 +178,56 @@ def draw_status_panel(
     cv2.putText(
         image,
         f"FIRE          : {fire_count}",
-        (25, 158),
+        (25, 155),
         cv2.FONT_HERSHEY_SIMPLEX,
         0.52,
-        (0, 0, 255),
-        2
+        (255, 255, 255),
+        1
     )
 
     cv2.putText(
         image,
         f"SMOKE         : {smoke_count}",
-        (25, 183),
+        (25, 180),
         cv2.FONT_HERSHEY_SIMPLEX,
         0.52,
-        (0, 165, 255),
-        2
+        (255, 255, 255),
+        1
     )
 
     cv2.putText(
         image,
         f"POSSIBLE VICT.: {victim_count}",
-        (25, 208),
+        (25, 205),
         cv2.FONT_HERSHEY_SIMPLEX,
-        0.50,
-        (0, 255, 0),
-        2
+        0.52,
+        (255, 255, 255),
+        1
     )
 
     cv2.putText(
         image,
         f"FPS           : {fps_value:.1f}",
-        (25, 233),
+        (25, 230),
         cv2.FONT_HERSHEY_SIMPLEX,
-        0.50,
+        0.52,
         (255, 255, 255),
         1
     )
 
-    # Threat indicator at top-right
-    if threat_level == "HIGH":
-        threat_color = (0, 0, 255)
-    elif threat_level == "MEDIUM":
-        threat_color = (0, 165, 255)
-    else:
-        threat_color = (0, 255, 0)
-
-    h, w = image.shape[:2]
-
-    threat_x1 = max(w - 300, 335)
-    threat_y1 = 50
-    threat_x2 = w - 10
-    threat_y2 = 95
-
-    cv2.rectangle(
-        image,
-        (threat_x1, threat_y1),
-        (threat_x2, threat_y2),
-        (20, 20, 20),
-        -1
-    )
-
-    cv2.rectangle(
-        image,
-        (threat_x1, threat_y1),
-        (threat_x2, threat_y2),
-        threat_color,
-        2
-    )
+    # Threat level
+    threat_text = f"THREAT LEVEL: {threat_level}"
 
     cv2.putText(
         image,
-        f"THREAT: {threat_level}",
-        (threat_x1 + 12, threat_y1 + 30),
+        threat_text,
+        (350, 75),
         cv2.FONT_HERSHEY_SIMPLEX,
         0.65,
-        threat_color,
+        (255, 255, 255),
         2
     )
+
 
 def calculate_threat_level(
     fire_count,
