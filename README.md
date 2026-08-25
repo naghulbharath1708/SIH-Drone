@@ -1,708 +1,202 @@
-# 🚁 SIH Drone — AI-Powered Disaster Response & Emergency Communication System
+# SIH Drone - AI Based Disaster Detection and Rescue Support System
 
-> **Smart India Hackathon (SIH) Project**  
-> **An autonomous multi-drone disaster-response concept combining AI-based victim/hazard detection, emergency communication, and essential-supply delivery.**
+## About the Project
 
----
+This project is developed as part of the Smart India Hackathon.
 
-## 🌍 Project Overview
+Our idea is to use a group of drones to support search and rescue operations during disasters. When a disaster occurs, the drones can be deployed to the affected area and work together to find people, identify hazards and help maintain communication.
 
-**SIH Drone** is a deployable multi-drone disaster-response system designed to support people and rescue teams during situations such as floods, earthquakes, landslides, cyclones, building collapses, and other communication-disrupting disasters.
+The main aim is to reduce the time taken to locate victims and also reduce the risk faced by rescue teams while entering dangerous areas.
 
-When a disaster occurs, a fleet of drones can be deployed into the affected area.
+## What Our Drone System Does
 
-The drones are designed to perform multiple coordinated roles:
+The system is designed around multiple drones working together.
 
-- 🧍 Detect victims and people using AI
-- ⚠️ Identify potential hazards such as fire and smoke
-- 📡 Establish emergency communication where normal network infrastructure is unavailable
-- 📦 Deliver essential food and emergency supplies
-- 🛰️ Relay information between drones and the rescue/control station
-- 🗺️ Provide a live/schematic operational view of the disaster area
-- 📝 Maintain event and detection logs for mission monitoring
+Each drone can be used for different tasks depending on the situation. The drones can move around the disaster area, collect information and send it back to the rescue team.
 
-The overall goal is to **reduce victim discovery time, improve responder safety, maintain communication, and provide immediate assistance before conventional rescue infrastructure is fully restored.**
+The major functions we are working on are:
 
----
+- Person detection
+- Possible victim detection
+- Fire detection
+- Smoke detection
+- Hazard detection
+- Event logging
+- Live detection dashboard
+- Communication between drones
+- Network support in areas where normal communication is unavailable
 
-# 🎯 Problem Statement
+## AI Detection
 
-> **"A deployable AI-powered autonomous drone that aids search-and-rescue operations by detecting people and hazards, thereby improving responder safety and reducing victim discovery time."**
+For the detection part, we are using computer vision and YOLO-based models.
 
-### The disaster-response challenge
+### Person Detection
 
-After a major disaster:
+The AI model detects people in the camera feed and displays a bounding box with the confidence value.
 
-- Communication towers may become unavailable.
-- Roads may be blocked.
-- Rescue teams may not immediately know where victims are located.
-- Entering dangerous areas can expose responders to additional risks.
-- Victims may require food, water, and basic emergency supplies before rescue teams reach them.
+### Fire and Smoke Detection
 
-A conventional response can therefore be delayed by **poor visibility, inaccessible terrain, and communication loss**.
+A separate fire/smoke model is used to detect fire and smoke.
 
----
+The detected condition is displayed on the screen and can also increase the threat level of the area.
 
-# 💡 Our Proposed Solution
+### Victim Detection
 
-We propose a **multi-drone disaster-response network** in which drones are deployed as a coordinated fleet.
+Pose detection is used to analyse the position of a detected person.
 
-Each drone can perform one or more mission roles depending on the situation.
+The system checks the body posture using keypoints such as:
 
-```text
-                         ┌─────────────────────┐
-                         │   RESCUE COMMAND    │
-                         │     / CONTROL       │
-                         └──────────┬──────────┘
-                                    │
-                                    │
-                       ┌────────────┴────────────┐
-                       │                         │
-                       ▼                         ▼
-                 ┌───────────┐             ┌───────────┐
-                 │ Drone D1  │◄───────────►│ Drone D2  │
-                 │ AI Search │    LoRa     │ AI Search │
-                 └─────┬─────┘             └─────┬─────┘
-                       │                         │
-                       │                         │
-                       ▼                         ▼
-                 ┌───────────┐             ┌───────────┐
-                 │ Drone D3  │◄───────────►│ Drone D4  │
-                 │ AI Search │    LoRa     │ Supply /  │
-                 │ / Relay   │             │ Support   │
-                 └───────────┘             └───────────┘
-```
+- Left shoulder
+- Right shoulder
+- Left hip
+- Right hip
 
-The fleet can create a communication and information network over the affected region while simultaneously searching for victims and hazards.
+Based on the position of these points, the system estimates whether a person may be lying down and marks it as a possible victim.
 
----
+This is only a basic detection method at the current stage and will be improved further.
 
-# 🚨 Disaster Mission Workflow
+## Mission Dashboard
 
-## Step 1 — Disaster Occurs
+The detection results are displayed through a simple dashboard.
 
-A disaster affects an area and may damage:
+The dashboard currently shows information such as:
 
-- Mobile towers
-- Internet infrastructure
-- Roads
-- Power infrastructure
-- Conventional communication systems
+- Number of people detected
+- Number of vehicles detected
+- Fire detections
+- Smoke detections
+- Possible victims
+- FPS
+- Current threat level
+- Number of events logged
+- Latest detected event
 
----
+This gives the operator a quick overview of what is happening in the area being monitored.
 
-## Step 2 — Drone Fleet Deployment
+## Event Logging
 
-A set of drones is deployed into the affected area.
+The system also maintains an event log in CSV format.
+
+The log records events such as:
+
+- System start
+- System stop
+- Person detected
+- Smoke detected
+- Fire detected
+- Threat level changes
+
+Each event contains information such as the timestamp, event type, confidence, count, details and threat level.
+
+This can be useful for reviewing what happened during a mission.
+
+## Drone Communication
+
+The drones are also planned to work as communication nodes during disaster situations.
+
+We are using ESP32 and LoRa for communication between the drones.
+
+The idea is that when normal mobile or internet connectivity is unavailable, the drone network can help transmit basic information between the affected area and the rescue team.
+
+The same system can also be used to pass information between multiple drones.
+
+## Emergency Supply Support
+
+Apart from detection and communication, the drone system can also be used to carry and deliver basic emergency supplies such as food and other necessary materials to affected people.
+
+This can be especially useful when roads are blocked or the area is unsafe for immediate human access.
+
+## Multiple Drone Operation
+
+The overall concept is based on using multiple drones instead of depending on a single drone.
 
 For example:
 
-```text
-D1 → Search / Detection
-D2 → Search / Detection
-D3 → Search / Communication Relay
-D4 → Supply / Search Support
-```
+- One drone can search for people.
+- Another drone can monitor hazards.
+- Another drone can help with communication.
+- Another drone can be used for emergency supply delivery.
 
-The exact role allocation can change according to mission requirements.
+The drones can share information and help the rescue team understand the situation before sending people into the affected area.
 
----
-
-## Step 3 — AI-Based Area Scanning
-
-The drones/camera system scans the disaster area.
-
-The AI pipeline can detect:
-
-- 👤 People
-- 🚗 Vehicles / objects
-- 🔥 Fire
-- 💨 Smoke
-- 🧍 Possible victims using pose estimation
-
-Detected objects are highlighted with bounding boxes and confidence values.
-
----
-
-## Step 4 — Victim Detection
-
-The pose-estimation system analyses human body keypoints.
-
-The current prototype uses important keypoints such as:
-
-```text
-Left Shoulder
-Right Shoulder
-Left Hip
-Right Hip
-```
-
-The relative position of these points is used to estimate body orientation.
-
-A sufficiently horizontal body posture can be flagged as:
-
-```text
-POSSIBLE VICTIM
-```
-
-> This is an AI-assisted indication, not a medical diagnosis or definitive confirmation of a victim's condition.
-
----
-
-## Step 5 — Hazard Detection
-
-The AI system can identify:
-
-```text
-FIRE
-SMOKE
-```
-
-Hazard detections contribute to the operational threat assessment.
-
-Example:
-
-```text
-THREAT: CLEAR
-```
-
-or:
-
-```text
-THREAT: MEDIUM
-```
-
-This allows the rescue team to prioritize potentially dangerous areas.
-
----
-
-# 📡 Emergency Communication Network
-
-One of the major concepts of the project is maintaining communication when normal cellular/internet infrastructure is unavailable.
-
-## LoRa + ESP32
-
-The proposed communication layer uses:
-
-- **ESP32**
-- **LoRa communication**
-- Drone-to-drone communication
-- Drone-to-ground/control communication
-
-LoRa is intended to provide **long-range, low-power emergency data communication** between nodes.
-
-The drones can act as distributed communication nodes/relays so that information can continue to move across the disaster area even when conventional communication infrastructure is unavailable.
-
-### Important distinction
-
-LoRa itself does **not** directly provide normal internet access.
-
-Instead, the system can provide an **emergency communication/data network**. A suitable gateway can bridge that network to the internet whenever an internet connection is available.
-
-This architecture can therefore support communication in areas where cellular coverage is damaged or unavailable.
-
----
-
-# 📦 Emergency Food & Supply Delivery
-
-The drone fleet can also support immediate humanitarian requirements.
-
-A designated drone can carry lightweight emergency supplies such as:
-
-- Food packets
-- Water
-- Basic first-aid supplies
-- Emergency communication equipment
-- Other lightweight essential materials
-
-The concept is to deliver immediate assistance to identified locations while rescue teams are still travelling to the area.
-
-> Payload capacity, delivery mechanism, flight time, and safety limits must be validated during the hardware-development stage.
-
----
-
-# 🗺️ Disaster Area Live Map
-
-The project includes a mission-map concept for monitoring drone positions and detected locations.
-
-A typical operational view can show:
-
-```text
-              DISASTER AREA — LIVE MAP
-
-        D4
-         \
-          \       D3
-           \     /
-            \   /
-             D2
-              \
-               D1 -------- RC
-```
-
-The map can represent:
-
-- Drone locations
-- Approximate communication coverage
-- Victim detection
-- Mission routes
-- Rescue command location
-- Communication links
-- Areas requiring attention
-
-The current map representation is **schematic and not intended to be geographically accurate**.
-
----
-
-# 📊 Mission Dashboard
-
-The AI detection system provides a real-time mission dashboard.
-
-Example information:
-
-```text
-MISSION DASHBOARD
-
-PERSONS       : 1
-VEHICLES      : 0
-FIRE          : 0
-SMOKE         : 1
-POSSIBLE VICT.: 0
-FPS           : 5.9
-EVENTS LOGGED : 5
-
-THREAT: MEDIUM
-AREA STATUS: ATTENTION REQUIRED
-```
-
-The dashboard provides the operator with a quick summary of the current AI-detected situation.
-
----
-
-# 📝 Event Logging
-
-Important system events are stored in:
-
-```text
-event_log.csv
-```
-
-The log records:
-
-| Field | Description |
-|---|---|
-| Timestamp | Date and time |
-| Event | Detection/system event |
-| Confidence | AI confidence |
-| Count | Number of detected objects |
-| Details | Description of event |
-| Threat Level | Current threat status |
-
-Example:
-
-```csv
-Timestamp,Event,Confidence,Count,Details,Threat Level
-2026-08-25 12:44:55,SYSTEM START,,,AI disaster detection system started,CLEAR
-2026-08-25 12:44:58,PERSON DETECTED,0.88,1,Person detected by AI object detection,CLEAR
-2026-08-25 12:45:03,SMOKE DETECTED,0.61,1,Smoke detected by AI fire/smoke model,MEDIUM
-2026-08-25 12:45:05,THREAT LEVEL MEDIUM,,,Potential hazard condition detected,MEDIUM
-```
-
-This creates a persistent mission history that can be reviewed after a test or operation.
-
----
-
-# 🧠 AI Detection Architecture
-
-The current computer-vision prototype combines multiple AI components.
-
-```text
-                   CAMERA / VIDEO INPUT
-                           │
-                           ▼
-                 ┌─────────────────────┐
-                 │   OpenCV Pipeline   │
-                 └──────────┬──────────┘
-                            │
-          ┌─────────────────┼─────────────────┐
-          │                 │                 │
-          ▼                 ▼                 ▼
-   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
-   │ YOLO Object  │  │ Fire/Smoke   │  │ YOLO Pose    │
-   │ Detection    │  │ Detection    │  │ Estimation   │
-   └──────┬───────┘  └──────┬───────┘  └──────┬───────┘
-          │                 │                 │
-          └─────────────────┼─────────────────┘
-                            ▼
-                 ┌─────────────────────┐
-                 │ Detection Analysis  │
-                 └──────────┬──────────┘
-                            ▼
-                 ┌─────────────────────┐
-                 │ Threat Assessment   │
-                 └──────────┬──────────┘
-                            │
-              ┌─────────────┼─────────────┐
-              ▼             ▼             ▼
-        Dashboard       Event Log      Alerts/
-        Display         CSV History    Decisions
-```
-
----
-
-# 🤖 AI Models
-
-The repository currently contains:
-
-```text
-yolo11n.pt
-yolo11n-pose.pt
-fire_smoke.pt
-```
-
-| Model | Role |
-|---|---|
-| `yolo11n.pt` | Object/person detection |
-| `yolo11n-pose.pt` | Human pose/keypoint estimation |
-| `fire_smoke.pt` | Fire and smoke detection |
-
----
-
-# 🔌 Hardware Concept
-
-The future integrated hardware architecture is based around:
-
-```text
-                    ┌───────────────┐
-                    │     ESP32     │
-                    └───────┬───────┘
-                            │
-                    ┌───────▼───────┐
-                    │   LoRa Module  │
-                    └───────┬───────┘
-                            │
-                    Long-range data
-                            │
-                ┌───────────┼───────────┐
-                ▼           ▼           ▼
-              Drone       Drone       Ground
-               D1           D2         Station
-```
-
-Potential hardware modules include:
-
-- ESP32
-- LoRa transceiver
-- Camera
-- Drone flight controller
-- GPS module
-- Payload mechanism
-- Battery/power system
-- Sensors
-
-Hardware selection and integration will depend on the final drone design.
-
----
-
-# 🛠️ Software Technologies
-
-- **Python**
-- **OpenCV**
-- **Ultralytics YOLO**
-- **YOLO Object Detection**
-- **YOLO Pose Estimation**
-- **Computer Vision**
-- **CSV Event Logging**
-- **ESP32**
-- **LoRa Communication**
-- **Git**
-- **GitHub**
-- **Visual Studio Code**
-
----
-
-# 📁 Repository Structure
+## Current Project Structure
 
 ```text
 SIH-Drone/
 │
-├── fire_smoke_test.py
-├── fire_smoke.pt
-├── hazard_detection.py
-│
-├── integrated_detection.py
-├── integrated_detection_backup.py
-├── integrated_detection_dashboard_fixed.py
-├── integrated_detection_enhanced.py
-├── integrated_detection_event_logging.py
-│
-├── event_log.csv
 ├── main.py
 ├── person_detection.py
 ├── victim_detection.py
-├── yolo_test.py
+├── hazard_detection.py
+├── fire_smoke_test.py
 │
+├── integrated_detection.py
+├── integrated_detection_backup.py
+├── integrated_detection_enhanced.py
+├── integrated_detection_dashboard_fixed.py
+├── integrated_detection_event_logging.py
+│
+├── event_log.csv
+│
+├── yolo_test.py
 ├── yolo11n.pt
 ├── yolo11n-pose.pt
+├── fire_smoke.pt
 │
 └── SIH Drone Project.txt
 ```
 
-### Development Versions
+Some of the files are different versions created during development and testing. They are kept in the repository to show the progress of the project.
 
-The multiple integrated-detection files are intentionally retained to demonstrate development progress:
+## Technologies Used
 
-| File | Purpose |
-|---|---|
-| `integrated_detection.py` | Main integrated detection implementation |
-| `integrated_detection_backup.py` | Backup version |
-| `integrated_detection_enhanced.py` | Enhanced implementation |
-| `integrated_detection_dashboard_fixed.py` | Dashboard-focused version |
-| `integrated_detection_event_logging.py` | Event-logging implementation |
+- Python
+- OpenCV
+- YOLO
+- ESP32
+- LoRa
+- Computer Vision
+- Pose Detection
+- CSV based event logging
 
----
+## Current Status
 
-# 💻 Installation
+The basic AI detection system is working.
 
-## 1. Clone the Repository
+Currently implemented and tested:
 
-```bash
-git clone <YOUR_GITHUB_REPOSITORY_URL>
-cd SIH-Drone
-```
-
-## 2. Create Virtual Environment
-
-```bash
-python -m venv venv
-```
-
-Activate on Windows:
-
-```bash
-venv\Scripts\activate
-```
-
-## 3. Install Dependencies
+- Person detection
+- Fire/smoke detection
+- Basic victim detection
+- Threat level indication
+- Integrated camera detection
+- Mission dashboard
+- Event logging
 
-```bash
-pip install ultralytics opencv-python
-```
-
-Additional packages required by future hardware/communication modules can be installed separately.
-
----
-
-# ▶️ Running the AI Prototype
-
-Activate the virtual environment:
+The communication and multi-drone parts are being developed as part of the overall system.
 
-```bash
-venv\Scripts\activate
-```
+## Future Improvements
 
-Run the integrated detection system:
+The next stages of the project include:
 
-```bash
-python integrated_detection.py
-```
-
-For the event-logging version:
+- Better victim detection
+- Improved hazard classification
+- Multiple drone coordination
+- LoRa based communication between drones
+- Live location sharing
+- Better mission control dashboard
+- Emergency supply delivery mechanism
+- Improved detection accuracy
+- Testing in real disaster-like environments
 
-```bash
-python integrated_detection_event_logging.py
-```
+## Project Goal
 
-The system will:
-
-1. Load the AI models.
-2. Start the camera.
-3. Process the video stream.
-4. Detect people/objects.
-5. Detect fire and smoke.
-6. Analyse human pose.
-7. Estimate possible-victim conditions.
-8. Determine threat status.
-9. Display the mission dashboard.
-10. Record important events.
+The final goal is to develop a practical drone-based system that can assist rescue teams during disasters.
 
-Press:
+Instead of sending rescue personnel directly into an unknown and potentially dangerous area, the drones can first inspect the area, identify possible victims and hazards, and provide useful information to the rescue team.
 
-```text
-Q
-```
+This can help rescue teams make faster and safer decisions.
 
-to stop the application.
+## Team
 
----
-
-# 🔄 Complete Disaster-Response Concept
-
-The complete proposed system can be viewed as five connected layers:
-
-```text
-┌────────────────────────────────────────────────────┐
-│                1. DISASTER EVENT                   │
-│                                                    │
-│  Flood / Earthquake / Landslide / Cyclone / etc. │
-└────────────────────────┬───────────────────────────┘
-                         ▼
-┌────────────────────────────────────────────────────┐
-│              2. DRONE DEPLOYMENT                   │
-│                                                    │
-│          D1   D2   D3   D4   ...                  │
-│                                                    │
-│        Multi-drone search & support fleet         │
-└────────────────────────┬───────────────────────────┘
-                         ▼
-┌────────────────────────────────────────────────────┐
-│             3. AI SEARCH & DETECTION               │
-│                                                    │
-│ Person │ Fire │ Smoke │ Objects │ Pose/Victim     │
-└────────────────────────┬───────────────────────────┘
-                         ▼
-┌────────────────────────────────────────────────────┐
-│          4. COMMUNICATION & ASSISTANCE             │
-│                                                    │
-│ LoRa + ESP32  │  Emergency Network  │  Supplies  │
-│                                                    │
-│ Food / Water / Essential Payload Delivery         │
-└────────────────────────┬───────────────────────────┘
-                         ▼
-┌────────────────────────────────────────────────────┐
-│             5. RESCUE COORDINATION                 │
-│                                                    │
-│ Dashboard → Event Logs → Victim Location →       │
-│ Threat Information → Rescue Team                  │
-└────────────────────────────────────────────────────┘
-```
-
----
-
-# 🎯 Operational Objectives
-
-The system aims to:
-
-1. **Reduce victim discovery time**
-2. **Improve responder safety**
-3. **Detect hazards automatically**
-4. **Maintain emergency communication**
-5. **Deliver essential supplies**
-6. **Provide real-time operational information**
-7. **Maintain mission event history**
-8. **Enable coordinated multi-drone operations**
-
----
-
-# 🚀 Future Development
-
-The next stages of the project can include:
-
-### 🛩️ Autonomous Drone Operations
-
-- Autonomous waypoint navigation
-- Automatic area coverage
-- GPS-based positioning
-- Return-to-home functionality
-- Collision avoidance
-- Multi-drone coordination
-
-### 📡 Emergency Communication
-
-- LoRa mesh networking
-- ESP32-based communication nodes
-- Drone-to-drone relaying
-- Drone-to-ground communication
-- Gateway-based internet backhaul when available
-
-### 🗺️ Mission Intelligence
-
-- GPS-tagged victim locations
-- Live disaster map
-- Search-area coverage tracking
-- Drone health/status monitoring
-- Mission route planning
-
-### 📦 Humanitarian Support
-
-- Automated payload delivery
-- Food and water delivery
-- Emergency medical supply delivery
-- Payload release mechanism
-
-### 🧠 AI Improvements
-
-- Improved victim-condition classification
-- Thermal-camera integration
-- Night-time detection
-- Better fire/smoke detection
-- Multi-camera fusion
-- Improved false-positive filtering
-
----
-
-# ⚠️ Limitations & Safety
-
-This repository contains a **student prototype and proof-of-concept**.
-
-Important limitations include:
-
-- AI detection performance depends on camera quality, lighting, distance, and environmental conditions.
-- AI confidence does not guarantee detection correctness.
-- Pose-based victim detection is currently heuristic.
-- A `POSSIBLE VICTIM` result is not a medical diagnosis.
-- LoRa provides low-bandwidth communication and is not itself an internet connection.
-- Actual communication range depends on hardware, antenna, environment, frequency configuration, and regulations.
-- Drone payload capacity, flight time, and delivery mechanisms require physical testing.
-- Autonomous multi-drone operation requires additional flight-control, navigation, communication, and safety systems.
-- Real-world disaster deployment requires extensive testing, regulatory compliance, and human supervision.
-
----
-
-# 🏆 Expected Impact
-
-The proposed system aims to transform a drone from a simple aerial camera into a **multi-purpose disaster-response platform**.
-
-Instead of only observing a disaster area, the drone fleet can potentially:
-
-```text
-       SEARCH
-          ↓
-       DETECT
-          ↓
-      COMMUNICATE
-          ↓
-       SUPPORT
-          ↓
-       REPORT
-          ↓
-       ASSIST RESCUE
-```
-
-This combination of **AI detection + emergency communication + supply delivery + multi-drone coordination** can provide a stronger first-response capability in disaster-affected regions.
-
----
-
-# 👥 Team
-
-**Project:**  
-SIH Drone — AI-Powered Disaster Response & Search-and-Rescue System
-
-**Institution:**  
-Sri Shakthi Institute of Engineering and Technology
-
-**Competition:**  
-Smart India Hackathon (SIH)
-
-**Team:**  
-SIH Drone Team
-
----
-
-# 📄 License
-
-This project is developed as a student prototype for the **Smart India Hackathon (SIH)**.
-
-It is intended for research, demonstration, and educational purposes.
-
-Further engineering validation, safety testing, regulatory compliance, and field trials are required before real-world deployment.
+Developed as a Smart India Hackathon project.
