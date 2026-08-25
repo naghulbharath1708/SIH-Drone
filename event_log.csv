@@ -1,0 +1,43 @@
+Timestamp,Event,Confidence,Count,Details,Threat Level
+2026-08-25 12:44:55,SYSTEM START,,,AI disaster detection system started,CLEAR
+2026-08-25 12:44:58,PERSON DETECTED,0.88,1,Person detected by AI object detection,CLEAR
+2026-08-25 12:45:03,PERSON DETECTED,0.88,1,Person detected by AI object detection,CLEAR
+2026-08-25 12:45:05,SMOKE DETECTED,0.61,1,Smoke detected by AI fire/smoke model,MEDIUM
+2026-08-25 12:45:05,THREAT LEVEL MEDIUM,,,Potential hazard condition detected,MEDIUM
+2026-08-25 12:45:08,PERSON DETECTED,0.91,1,Person detected by AI object detection,CLEAR
+2026-08-25 12:45:13,PERSON DETECTED,0.89,1,Person detected by AI object detection,CLEAR
+2026-08-25 12:45:13,SMOKE DETECTED,0.47,1,Smoke detected by AI fire/smoke model,MEDIUM
+2026-08-25 12:45:13,THREAT LEVEL MEDIUM,,,Potential hazard condition detected,MEDIUM
+2026-08-25 12:45:18,PERSON DETECTED,0.92,3,Person detected by AI object detection,CLEAR
+2026-08-25 12:45:23,PERSON DETECTED,0.94,2,Person detected by AI object detection,CLEAR
+2026-08-25 12:45:25,SMOKE DETECTED,0.40,1,Smoke detected by AI fire/smoke model,MEDIUM
+2026-08-25 12:45:25,THREAT LEVEL MEDIUM,,,Potential hazard condition detected,MEDIUM
+2026-08-25 12:45:28,PERSON DETECTED,0.89,3,Person detected by AI object detection,CLEAR
+2026-08-25 12:45:31,SMOKE DETECTED,0.43,1,Smoke detected by AI fire/smoke model,MEDIUM
+2026-08-25 12:45:31,THREAT LEVEL MEDIUM,,,Potential hazard condition detected,MEDIUM
+2026-08-25 12:45:33,PERSON DETECTED,0.93,4,Person detected by AI object detection,CLEAR
+2026-08-25 12:45:38,PERSON DETECTED,0.92,5,Person detected by AI object detection,CLEAR
+2026-08-25 12:45:42,SMOKE DETECTED,0.40,1,Smoke detected by AI fire/smoke model,MEDIUM
+2026-08-25 12:45:42,THREAT LEVEL MEDIUM,,,Potential hazard condition detected,MEDIUM
+2026-08-25 12:45:43,PERSON DETECTED,0.91,3,Person detected by AI object detection,CLEAR
+2026-08-25 12:45:48,PERSON DETECTED,0.94,2,Person detected by AI object detection,CLEAR
+2026-08-25 12:45:54,PERSON DETECTED,0.89,2,Person detected by AI object detection,CLEAR
+2026-08-25 12:45:59,PERSON DETECTED,0.90,2,Person detected by AI object detection,CLEAR
+2026-08-25 12:46:04,PERSON DETECTED,0.92,2,Person detected by AI object detection,CLEAR
+2026-08-25 12:46:06,SYSTEM STOP,,,AI disaster detection system stopped,CLEAR
+2026-08-25 12:47:32,SYSTEM START,,,AI disaster detection system started,CLEAR
+2026-08-25 12:47:35,PERSON DETECTED,0.87,1,Person detected by AI object detection,CLEAR
+2026-08-25 12:47:40,PERSON DETECTED,0.89,1,Person detected by AI object detection,CLEAR
+2026-08-25 12:47:42,SMOKE DETECTED,0.47,1,Smoke detected by AI fire/smoke model,MEDIUM
+2026-08-25 12:47:42,THREAT LEVEL MEDIUM,,,Potential hazard condition detected,MEDIUM
+2026-08-25 12:47:45,PERSON DETECTED,0.88,1,Person detected by AI object detection,CLEAR
+2026-08-25 12:47:50,SMOKE DETECTED,0.42,1,Smoke detected by AI fire/smoke model,MEDIUM
+2026-08-25 12:47:50,THREAT LEVEL MEDIUM,,,Potential hazard condition detected,MEDIUM
+2026-08-25 12:47:50,PERSON DETECTED,0.89,1,Person detected by AI object detection,CLEAR
+2026-08-25 12:47:55,PERSON DETECTED,0.90,1,Person detected by AI object detection,CLEAR
+2026-08-25 12:48:00,PERSON DETECTED,0.90,1,Person detected by AI object detection,CLEAR
+2026-08-25 12:48:05,PERSON DETECTED,0.90,1,Person detected by AI object detection,CLEAR
+2026-08-25 12:48:10,SMOKE DETECTED,0.41,1,Smoke detected by AI fire/smoke model,MEDIUM
+2026-08-25 12:48:10,THREAT LEVEL MEDIUM,,,Potential hazard condition detected,MEDIUM
+2026-08-25 12:48:10,PERSON DETECTED,0.88,1,Person detected by AI object detection,CLEAR
+2026-08-25 12:48:12,SYSTEM STOP,,,AI disaster detection system stopped,CLEAR
