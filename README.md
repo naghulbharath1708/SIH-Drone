@@ -175,6 +175,12 @@ Currently implemented and tested:
 
 The communication and multi-drone parts are being developed as part of the overall system.
 
+## Drone Vision & Object Detection Pipeline
+
+The vision module captures camera frames, preprocesses the input, performs object detection, extracts detection information, and sends the results to the main system.
+
+![Drone Vision & Object Detection Pipeline](docs/drone-vision-object-detection-pipeline.png)
+
 ## Future Improvements
 
 The next stages of the project include:
