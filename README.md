@@ -179,7 +179,7 @@ The communication and multi-drone parts are being developed as part of the overa
 
 The vision module captures camera frames, preprocesses the input, performs object detection, extracts detection information, and sends the results to the main system.
 
-![Drone Vision & Object Detection Pipeline](docs/drone-vision-object-detection-pipeline.png)
+![Drone Vision & Object Detection Pipeline](docs/drone_vision_object_detection.png)
 
 ## Future Improvements
 
