@@ -351,15 +351,28 @@ def draw_status_panel(
     panel_y2 = 295
 
 
+    # Semi-transparent dashboard background
+    # The camera feed remains visible underneath the panel.
+    overlay = image.copy()
+
     cv2.rectangle(
-        image,
+        overlay,
         (panel_x1, panel_y1),
         (panel_x2, panel_y2),
         (20, 20, 20),
         -1
     )
 
+    cv2.addWeighted(
+        overlay,
+        0.55,
+        image,
+        0.45,
+        0,
+        image
+    )
 
+    # Dashboard border remains fully visible
     cv2.rectangle(
         image,
         (panel_x1, panel_y1),
@@ -497,14 +510,25 @@ def draw_status_panel(
     threat_y2 = 95
 
 
+    # Semi-transparent threat indicator background
+    threat_overlay = image.copy()
+
     cv2.rectangle(
-        image,
+        threat_overlay,
         (threat_x1, threat_y1),
         (threat_x2, threat_y2),
         (20, 20, 20),
         -1
     )
 
+    cv2.addWeighted(
+        threat_overlay,
+        0.55,
+        image,
+        0.45,
+        0,
+        image
+    )
 
     cv2.rectangle(
         image,
@@ -542,14 +566,25 @@ def draw_status_panel(
         )
 
 
+    # Semi-transparent last-event background
+    event_overlay = image.copy()
+
     cv2.rectangle(
-        image,
+        event_overlay,
         (threat_x1, 108),
         (w - 10, 148),
         (20, 20, 20),
         -1
     )
 
+    cv2.addWeighted(
+        event_overlay,
+        0.55,
+        image,
+        0.45,
+        0,
+        image
+    )
 
     cv2.putText(
         image,
